@@ -1,0 +1,36 @@
+#!/usr/bin/python
+
+import os
+import sys
+
+os.system('tar xvzf jieba.tar.gz > /dev/null')
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+sys.path.append("./")
+
+import jieba
+import jieba.posseg
+import jieba.analyse
+
+def mapper_func():
+    for line in sys.stdin:
+        ss = line.strip().split('\t')
+        if len(ss) != 2:
+            continue
+        music_id = ss[0].strip()
+        music_name = ss[1].strip()
+
+        seg_list = jieba.cut(music_name, cut_all=False)
+        print '\t'.join([music_id, music_name, ''.join(seg_list)])
+
+
+if __name__ == "__main__":
+    module = sys.modules[__name__]
+    func = getattr(module, sys.argv[1])
+    args = None
+    if len(sys.argv) > 1:
+        args = sys.argv[2:]
+    func(*args)
+
